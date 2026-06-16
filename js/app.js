@@ -215,19 +215,33 @@ async function sendNotification() {
   if (notificationSent) return;
   notificationSent = true;
 
-  try {
-    await fetch('/api/notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        date: state.date,
-        food: state.food,
-        dress: state.dress,
-      }),
-    });
-  } catch {
-    // Notification failure should not block the celebration screen.
-  }
+  const completedAt = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+  // Email runs in the browser — FormSubmit blocks server-side requests from Vercel.
+  fetch('https://formsubmit.co/ajax/ashwinprabhu908@gmail.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      _subject: 'Someone said YES to your date! 💕',
+      _template: 'table',
+      _captcha: 'false',
+      When: state.date || '—',
+      Food: state.food || '—',
+      Outfit: state.dress || '—',
+      Completed: completedAt,
+    }),
+  }).catch(() => {});
+
+  // SMS via Vercel API (needs FAST2SMS_API_KEY or Twilio in project settings).
+  fetch('/api/notify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      date: state.date,
+      food: state.food,
+      dress: state.dress,
+    }),
+  }).catch(() => {});
 }
 
 function launchConfetti() {

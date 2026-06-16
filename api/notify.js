@@ -5,28 +5,21 @@ function buildMessage({ date, food, dress }) {
   const lines = [
     'Someone said YES to your date proposal! 💕',
     '',
-    `📅 When: ${date || '—'}`,
-    `🍽️ Food: ${food || '—'}`,
-    `👗 Outfit: ${dress || '—'}`,
+    `When: ${date || '—'}`,
+    `Food: ${food || '—'}`,
+    `Outfit: ${dress || '—'}`,
     '',
-    `Completed at: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`,
+    `Completed: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`,
   ];
   return lines.join('\n');
 }
 
-function buildHtml({ date, food, dress }) {
-  return `
-    <div style="font-family:Segoe UI,sans-serif;max-width:480px;margin:0 auto;padding:24px;">
-      <h2 style="color:#D4537E;">Someone said YES! 💕</h2>
-      <p>Your date proposal was accepted. Here are the details:</p>
-      <table style="width:100%;border-collapse:collapse;margin:16px 0;">
-        <tr><td style="padding:8px 0;color:#9b6fa0;">📅 When</td><td style="padding:8px 0;font-weight:600;">${date || '—'}</td></tr>
-        <tr><td style="padding:8px 0;color:#9b6fa0;">🍽️ Food</td><td style="padding:8px 0;font-weight:600;">${food || '—'}</td></tr>
-        <tr><td style="padding:8px 0;color:#9b6fa0;">👗 Outfit</td><td style="padding:8px 0;font-weight:600;">${dress || '—'}</td></tr>
-      </table>
-      <p style="color:#9b6fa0;font-size:13px;">Sent from your date proposal page</p>
-    </div>
-  `;
+function buildSmsMessage({ date, food, dress }) {
+  return `Date YES! When: ${date || '—'} | Food: ${food || '—'} | Outfit: ${dress || '—'}`;
+}
+
+function phoneDigits() {
+  return NOTIFICATION_PHONE.replace(/\D/g, '').replace(/^91/, '') || '8939475035';
 }
 
 async function sendEmailResend(details) {
@@ -47,7 +40,6 @@ async function sendEmailResend(details) {
       to: [NOTIFICATION_EMAIL],
       subject: 'Someone said YES to your date! 💕',
       text: buildMessage(details),
-      html: buildHtml(details),
     }),
   });
 
@@ -59,37 +51,7 @@ async function sendEmailResend(details) {
   return { ok: true };
 }
 
-async function sendEmailFormSubmit(details) {
-  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(NOTIFICATION_EMAIL)}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({
-      _subject: 'Someone said YES to your date! 💕',
-      _template: 'table',
-      When: details.date,
-      Food: details.food,
-      Outfit: details.dress,
-      Completed: new Date().toLocaleString(),
-    }),
-  });
-
-  if (!response.ok) {
-    return { ok: false, error: 'FormSubmit error' };
-  }
-
-  return { ok: true };
-}
-
-async function sendEmail(details) {
-  const resend = await sendEmailResend(details);
-  if (resend.ok) return resend;
-  return sendEmailFormSubmit(details);
-}
-
-async function sendSms(details) {
+async function sendSmsTwilio(details) {
   const sid = process.env.TWILIO_ACCOUNT_SID;
   const token = process.env.TWILIO_AUTH_TOKEN;
   const from = process.env.TWILIO_PHONE_NUMBER;
@@ -108,7 +70,7 @@ async function sendSms(details) {
     body: new URLSearchParams({
       To: NOTIFICATION_PHONE,
       From: from,
-      Body: buildMessage(details),
+      Body: buildSmsMessage(details),
     }),
   });
 
@@ -118,6 +80,39 @@ async function sendSms(details) {
   }
 
   return { ok: true };
+}
+
+async function sendSmsFast2SMS(details) {
+  const apiKey = process.env.FAST2SMS_API_KEY;
+  if (!apiKey) {
+    return { ok: false, error: 'FAST2SMS_API_KEY not configured' };
+  }
+
+  const response = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+    method: 'POST',
+    headers: {
+      authorization: apiKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      route: 'q',
+      message: buildSmsMessage(details).slice(0, 160),
+      numbers: phoneDigits(),
+    }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.return !== true) {
+    return { ok: false, error: data.message || 'Fast2SMS error' };
+  }
+
+  return { ok: true };
+}
+
+async function sendSms(details) {
+  const twilio = await sendSmsTwilio(details);
+  if (twilio.ok) return twilio;
+  return sendSmsFast2SMS(details);
 }
 
 module.exports = async (req, res) => {
@@ -134,7 +129,8 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { date, food, dress } = req.body || {};
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const { date, food, dress } = body;
     const details = {
       date: String(date || '').slice(0, 200),
       food: String(food || '').slice(0, 200),
@@ -142,16 +138,17 @@ module.exports = async (req, res) => {
     };
 
     const [email, sms] = await Promise.all([
-      sendEmail(details),
+      sendEmailResend(details),
       sendSms(details),
     ]);
 
-    const success = email.ok || sms.ok;
-
-    return res.status(success ? 200 : 500).json({
-      success,
+    return res.status(200).json({
+      success: email.ok || sms.ok,
       email,
       sms,
+      note: !email.ok && !sms.ok
+        ? 'Email is sent from the browser via FormSubmit. Add RESEND_API_KEY or FAST2SMS_API_KEY in Vercel for server delivery.'
+        : undefined,
     });
   } catch (error) {
     return res.status(500).json({

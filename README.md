@@ -45,25 +45,26 @@ Connect this repo to your existing Vercel project (`prj_uwge4jPGSfXK1fFhjyafYSR0
 
 ### Email & SMS notifications
 
-When someone completes the proposal, you get an email and text with their choices (date, food, outfit).
+When someone completes the proposal on [your live site](https://date-proposal-eta.vercel.app/), you get an email and text with their choices.
 
 **Notifications are sent to:**
 - Email: `ashwinprabhu908@gmail.com`
 - Phone: `+91 8939475035`
 
-Add these **Vercel environment variables** (Project → Settings → Environment Variables):
+#### Email (works after one-time activation)
 
-| Variable | Purpose |
-|----------|---------|
-| `RESEND_API_KEY` | Optional — API key from [resend.com](https://resend.com). If omitted, email uses FormSubmit instead. |
-| `RESEND_FROM` | Optional sender for Resend, e.g. `Date Proposal <onboarding@resend.dev>` |
-| `TWILIO_ACCOUNT_SID` | From [twilio.com](https://www.twilio.com) console |
-| `TWILIO_AUTH_TOKEN` | Twilio auth token |
-| `TWILIO_PHONE_NUMBER` | Your Twilio phone number (sender) |
-| `NOTIFICATION_EMAIL` | Optional override (defaults to ashwinprabhu908@gmail.com) |
-| `NOTIFICATION_PHONE` | Optional override (defaults to +918939475035) |
+Email is sent from the visitor's browser via [FormSubmit](https://formsubmit.co). The **first time** someone completes the proposal, FormSubmit sends you an **activation email** — open it and click **Activate Form** (check spam too). After that, every completion sends the details to your inbox.
 
-Redeploy after adding env vars. Email works via FormSubmit by default (confirm the first email from FormSubmit in your inbox). SMS requires Twilio credentials and credits.
+#### SMS (requires a free API key)
+
+SMS does not work automatically. Add **one** of these in **Vercel → Project → Settings → Environment Variables**, then redeploy:
+
+| Variable | How to get it |
+|----------|----------------|
+| `FAST2SMS_API_KEY` | Sign up at [fast2sms.com](https://www.fast2sms.com) (₹50 free credit) → Dashboard → API Key |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER` | [twilio.com](https://www.twilio.com) (international) |
+
+Optional overrides: `NOTIFICATION_EMAIL`, `NOTIFICATION_PHONE`, `RESEND_API_KEY` (server-side email backup).
 
 ### GitHub Pages
 
