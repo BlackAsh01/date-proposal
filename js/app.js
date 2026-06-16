@@ -1,4 +1,5 @@
 const state = { date: null, food: null, dress: null };
+let notificationSent = false;
 
 const BG_EMOJIS = ['🌸', '💕', '✨', '🌷', '💗', '🦋', '🌹', '💖', '🎀', '💝', '🌺', '💫', '🧸', '💌', '🍓'];
 const CONFETTI_EMOJIS = ['🎉', '💕', '🌸', '✨', '🎊', '💗', '🌷', '🦋', '🎀', '💝', '🌺', '💫', '⭐', '🌟', '💌'];
@@ -207,6 +208,26 @@ function buildSummary() {
   document.getElementById('sumDate').textContent = state.date || '—';
   document.getElementById('sumFood').textContent = state.food || '—';
   document.getElementById('sumDress').textContent = state.dress || '—';
+  sendNotification();
+}
+
+async function sendNotification() {
+  if (notificationSent) return;
+  notificationSent = true;
+
+  try {
+    await fetch('/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        date: state.date,
+        food: state.food,
+        dress: state.dress,
+      }),
+    });
+  } catch {
+    // Notification failure should not block the celebration screen.
+  }
 }
 
 function launchConfetti() {
@@ -248,6 +269,7 @@ function restart() {
   state.date = null;
   state.food = null;
   state.dress = null;
+  notificationSent = false;
 
   const noBtn = document.getElementById('noBtn');
   noBtn.classList.remove('is-dodging');
