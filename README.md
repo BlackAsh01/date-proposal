@@ -31,22 +31,17 @@ date-proposal/
 
 ## Deploy
 
-### Vercel (automatic on push)
+### Vercel (recommended — automatic on push)
 
-This repo deploys to Vercel on every push to `main` via GitHub Actions.
+Connect this repo to your existing Vercel project (`prj_uwge4jPGSfXK1fFhjyafYSR0aQVH`) once, then every push to `main` deploys automatically.
 
-**One-time setup** — add these secrets in GitHub → repo → **Settings → Secrets and variables → Actions**:
+1. Open [vercel.com/dashboard](https://vercel.com/dashboard) and select your **date-proposal** project
+2. Go to **Settings → Git**
+3. Click **Connect Git Repository** and choose **`BlackAsh01/date-proposal`**
+4. Set **Production Branch** to `main`
+5. Push to `main` — Vercel builds and deploys on each push
 
-| Secret | Where to find it |
-|--------|------------------|
-| `VERCEL_TOKEN` | [vercel.com/account/tokens](https://vercel.com/account/tokens) → Create Token |
-| `VERCEL_ORG_ID` | Vercel → **Team Settings → General → Team ID** (or your personal account ID in account settings) |
-
-The Vercel project ID (`prj_uwge4jPGSfXK1fFhjyafYSR0aQVH`) is already set in `.github/workflows/vercel-deploy.yml`.
-
-After secrets are saved, push to `main` and the site deploys automatically.
-
-**Alternative (no GitHub Actions):** In the [Vercel project settings](https://vercel.com), go to **Git** and connect `BlackAsh01/date-proposal`. Vercel will deploy on every push directly — remove the workflow file if you use this instead.
+> **Note:** GitHub Pages only serves static files. Use Vercel for the `/api/notify` email & SMS endpoint.
 
 ### Email & SMS notifications
 
