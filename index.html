@@ -9,6 +9,8 @@
 </head>
 <body>
   <div class="floating-bg" id="floatBg" aria-hidden="true"></div>
+  <div class="sparkle-bg" id="sparkleBg" aria-hidden="true"></div>
+  <div class="edge-hearts" id="edgeHearts" aria-hidden="true"></div>
   <div id="confetti-box" aria-hidden="true"></div>
 
   <main class="card" id="card">
@@ -21,7 +23,10 @@
     </nav>
 
     <section class="stage active" id="s0" aria-labelledby="stage0-title">
-      <span class="emoji-hero" role="img" aria-label="pleading face">🥺</span>
+      <div class="hero-row">
+        <span class="emoji-hero" role="img" aria-label="pleading face">🥺</span>
+        <img class="stage-gif" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3luMDR5bDRucDVrMmxyZWM0NHAxcWE3amdiaWVneDIyYTgwd2x5NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fBITrna5OqS9KeAZab/giphy.gif" alt="" width="90" height="90" loading="lazy">
+      </div>
       <h1 id="stage0-title">Hey, I have a very<br>important question…</h1>
       <p class="subtitle">Please read carefully. The "No" button has been briefed.<br>It refuses to cooperate. 😈</p>
       <p class="question-text">Will you go on a date with me? 🌹</p>
@@ -33,7 +38,10 @@
     </section>
 
     <section class="stage" id="s1" aria-labelledby="stage1-title">
-      <span class="emoji-hero emoji-hero--slow" role="img" aria-label="calendar">📅</span>
+      <div class="hero-row">
+        <span class="emoji-hero emoji-hero--slow" role="img" aria-label="calendar">📅</span>
+        <img class="stage-gif" src="https://media.giphy.com/media/26u4cqiYI30juCOGY/giphy.gif" alt="" width="90" height="90" loading="lazy">
+      </div>
       <h1 id="stage1-title">Okay, WHEN are you free?! 🕺</h1>
       <p class="subtitle">Pick a day — or choose an exact date.<br>Your schedule is precious, I respect it 🫡</p>
       <div class="option-grid" id="dateGrid">
@@ -48,7 +56,10 @@
     </section>
 
     <section class="stage" id="s2" aria-labelledby="stage2-title">
-      <span class="emoji-hero emoji-hero--fast" role="img" aria-label="drooling face">🤤</span>
+      <div class="hero-row">
+        <span class="emoji-hero emoji-hero--fast" role="img" aria-label="drooling face">🤤</span>
+        <img class="stage-gif" src="https://media.giphy.com/media/3o7aCTPPm4OHfRLSH6/giphy.gif" alt="" width="90" height="90" loading="lazy">
+      </div>
       <h1 id="stage2-title">What are we feeling, food-wise?</h1>
       <p class="subtitle">No judgment… unless you say "just a salad"<br>In which case, we need to talk 🥗👀</p>
       <div class="food-grid">
@@ -63,7 +74,10 @@
     </section>
 
     <section class="stage" id="s3" aria-labelledby="stage3-title">
-      <span class="emoji-hero emoji-hero--medium" role="img" aria-label="dress">👗</span>
+      <div class="hero-row">
+        <span class="emoji-hero emoji-hero--medium" role="img" aria-label="dress">👗</span>
+        <img class="stage-gif" src="https://media.giphy.com/media/l0MYC0LajbaPoEADu/giphy.gif" alt="" width="90" height="90" loading="lazy">
+      </div>
       <h1 id="stage3-title">Any dress code preferences? 💅</h1>
       <p class="subtitle">Spoiler: you'd look stunning in literally anything.<br>But I'll let you choose anyway ✨</p>
       <div class="dress-wrap">
@@ -78,7 +92,13 @@
     </section>
 
     <section class="stage" id="s4" aria-labelledby="stage4-title">
-      <span class="emoji-hero emoji-hero--wiggle" role="img" aria-label="party face">🥳</span>
+      <div class="hero-row hero-row--celebrate">
+        <span class="emoji-hero emoji-hero--wiggle" role="img" aria-label="party face">🥳</span>
+        <img class="stage-gif stage-gif--big" src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="" width="110" height="110" loading="lazy">
+      </div>
+      <div class="celebration-strip" aria-hidden="true">
+        <span>💕</span><span>✨</span><span>🎀</span><span>💖</span><span>🌸</span><span>💝</span><span>🦋</span>
+      </div>
       <h1 id="stage4-title">It's officially a DATE!! 🎊</h1>
       <p class="subtitle">Saving this to my heart forever 💌<br>Here's the plan, officially official:</p>
       <div class="summary-box">
@@ -90,7 +110,7 @@
         I'm already nervous and excited at the same time 🦋🦋<br>
         This is going to be the best day ever. I promise. 💕
       </p>
-      <button type="button" class="next-btn" data-action="restart">Send to someone special 💌</button>
+      <button type="button" class="next-btn" data-action="restart">Sent from someone special 💌</button>
       <br>
       <button type="button" class="restart-btn" data-action="restart">Start over 🔄</button>
     </section>

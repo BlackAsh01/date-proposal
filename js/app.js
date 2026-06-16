@@ -1,20 +1,84 @@
 const state = { date: null, food: null, dress: null };
 
-const BG_EMOJIS = ['🌸', '💕', '✨', '🌷', '💗', '🦋', '🌹', '💖', '🎀', '💝', '🌺', '💫'];
-const CONFETTI_EMOJIS = ['🎉', '💕', '🌸', '✨', '🎊', '💗', '🌷', '🦋', '🎀', '💝', '🌺', '💫'];
-const HEART_EMOJIS = ['💕', '💗', '💖', '✨'];
+const BG_EMOJIS = ['🌸', '💕', '✨', '🌷', '💗', '🦋', '🌹', '💖', '🎀', '💝', '🌺', '💫', '🧸', '💌', '🍓'];
+const CONFETTI_EMOJIS = ['🎉', '💕', '🌸', '✨', '🎊', '💗', '🌷', '🦋', '🎀', '💝', '🌺', '💫', '⭐', '🌟', '💌'];
+const HEART_EMOJIS = ['💕', '💗', '💖', '✨', '💝', '🌸'];
+const BURST_EMOJIS = ['💕', '✨', '🌸', '💖', '🎀', '⭐', '💗', '🦋'];
+const SPARKLE_CHARS = ['✨', '⭐', '💫', '·'];
 
 function initFloatingBackground() {
   const container = document.getElementById('floatBg');
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 22; i++) {
     const span = document.createElement('span');
-    span.textContent = BG_EMOJIS[Math.floor(Math.random() * BG_EMOJIS.length)];
+    const isHeart = i % 4 === 0;
+    span.textContent = isHeart ? '💕' : BG_EMOJIS[Math.floor(Math.random() * BG_EMOJIS.length)];
+    if (isHeart) span.classList.add('is-heart');
     span.style.left = `${Math.random() * 98}vw`;
     span.style.animationDuration = `${8 + Math.random() * 14}s`;
     span.style.animationDelay = `${Math.random() * -20}s`;
     span.style.fontSize = `${18 + Math.random() * 22}px`;
     container.appendChild(span);
   }
+}
+
+function initSparkles() {
+  const container = document.getElementById('sparkleBg');
+  for (let i = 0; i < 35; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.style.left = `${Math.random() * 100}%`;
+    sparkle.style.top = `${Math.random() * 100}%`;
+    sparkle.style.animationDuration = `${2 + Math.random() * 3}s`;
+    sparkle.style.animationDelay = `${Math.random() * -5}s`;
+    const size = 3 + Math.random() * 4;
+    sparkle.style.width = `${size}px`;
+    sparkle.style.height = `${size}px`;
+    container.appendChild(sparkle);
+  }
+}
+
+function spawnEdgeHeart() {
+  const container = document.getElementById('edgeHearts');
+  const heart = document.createElement('div');
+  heart.className = 'edge-heart';
+  heart.textContent = HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)];
+  heart.style.left = `${5 + Math.random() * 90}vw`;
+  heart.style.bottom = `${Math.random() * 15}vh`;
+  heart.style.animationDuration = `${4 + Math.random() * 4}s`;
+  heart.style.fontSize = `${16 + Math.random() * 14}px`;
+  container.appendChild(heart);
+  setTimeout(() => heart.remove(), 9000);
+}
+
+function startEdgeHearts() {
+  spawnEdgeHeart();
+  setInterval(spawnEdgeHeart, 2200);
+}
+
+function burstAt(x, y, count = 12) {
+  for (let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'burst-particle';
+    particle.textContent = BURST_EMOJIS[Math.floor(Math.random() * BURST_EMOJIS.length)];
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+    const dist = 40 + Math.random() * 60;
+    particle.style.setProperty('--bx', `${Math.cos(angle) * dist}px`);
+    particle.style.setProperty('--by', `${Math.sin(angle) * dist}px`);
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 900);
+  }
+}
+
+function clickSparkle(x, y) {
+  const sparkle = document.createElement('div');
+  sparkle.className = 'click-sparkle';
+  sparkle.textContent = SPARKLE_CHARS[Math.floor(Math.random() * SPARKLE_CHARS.length)];
+  sparkle.style.left = `${x}px`;
+  sparkle.style.top = `${y}px`;
+  document.body.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 700);
 }
 
 function dodgeNo(event) {
@@ -69,13 +133,17 @@ function animateCard() {
 function nextStage(from) {
   document.getElementById(`s${from}`).classList.remove('active');
   const next = from + 1;
-  document.getElementById(`s${next}`).classList.add('active');
+  const nextEl = document.getElementById(`s${next}`);
+  nextEl.classList.remove('active');
+  nextEl.offsetHeight;
+  nextEl.classList.add('active');
   setDots(next);
   animateCard();
 
   if (next === 4) {
     buildSummary();
     launchConfetti();
+    setTimeout(() => launchConfetti(), 600);
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -143,21 +211,31 @@ function buildSummary() {
 
 function launchConfetti() {
   const box = document.getElementById('confetti-box');
-  box.innerHTML = '';
+  const count = 45;
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < count; i++) {
     setTimeout(() => {
       const piece = document.createElement('div');
       piece.className = 'cf';
       piece.textContent = CONFETTI_EMOJIS[Math.floor(Math.random() * CONFETTI_EMOJIS.length)];
       piece.style.left = `${Math.random() * 95}vw`;
       piece.style.top = '0';
-      piece.style.animationDuration = `${2 + Math.random() * 2}s`;
-      piece.style.fontSize = `${18 + Math.random() * 18}px`;
+      piece.style.animationDuration = `${2 + Math.random() * 2.5}s`;
+      piece.style.fontSize = `${18 + Math.random() * 22}px`;
       box.appendChild(piece);
-      setTimeout(() => piece.remove(), 4200);
-    }, i * 80);
+      setTimeout(() => piece.remove(), 5000);
+    }, i * 60);
   }
+}
+
+function celebrateYes() {
+  const btn = document.getElementById('yesBtn');
+  btn.classList.add('is-celebrating');
+  setTimeout(() => btn.classList.remove('is-celebrating'), 500);
+
+  const rect = btn.getBoundingClientRect();
+  burstAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 16);
+  launchConfetti();
 }
 
 function restart() {
@@ -186,6 +264,7 @@ function restart() {
   });
 
   animateCard();
+  document.getElementById('confetti-box').innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -197,8 +276,19 @@ function bindSelectableCards(selector, handler) {
 
 function init() {
   initFloatingBackground();
+  initSparkles();
+  startEdgeHearts();
 
-  document.getElementById('yesBtn').addEventListener('click', () => nextStage(0));
+  document.getElementById('yesBtn').addEventListener('click', () => {
+    celebrateYes();
+    setTimeout(() => nextStage(0), 400);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('.option-card, .food-card, .dress-chip, .btn-yes, .next-btn')) {
+      clickSparkle(event.clientX, event.clientY);
+    }
+  });
 
   const noBtn = document.getElementById('noBtn');
   noBtn.addEventListener('mousemove', dodgeNo);
