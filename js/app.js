@@ -20,17 +20,23 @@ function initFloatingBackground() {
 function dodgeNo(event) {
   const btn = document.getElementById('noBtn');
   const row = document.getElementById('askRow');
-  const rect = row.getBoundingClientRect();
+  const rowRect = row.getBoundingClientRect();
+
+  if (!btn.classList.contains('is-dodging')) {
+    const btnRect = btn.getBoundingClientRect();
+    btn.classList.add('is-dodging');
+    btn.style.left = `${btnRect.left - rowRect.left}px`;
+    btn.style.top = `${btnRect.top - rowRect.top}px`;
+  }
+
   const clientX = event.touches ? event.touches[0].clientX : event.clientX;
   const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-  const cx = clientX - rect.left;
-  const cy = clientY - rect.top;
-  const rw = rect.width;
-  const rh = rect.height;
+  const cx = clientX - rowRect.left;
+  const cy = clientY - rowRect.top;
+  const rw = rowRect.width;
+  const rh = rowRect.height;
   const bw = btn.offsetWidth;
   const bh = btn.offsetHeight;
-
-  btn.style.position = 'absolute';
 
   let tries = 0;
   let nx;
@@ -166,7 +172,7 @@ function restart() {
   state.dress = null;
 
   const noBtn = document.getElementById('noBtn');
-  noBtn.style.position = '';
+  noBtn.classList.remove('is-dodging');
   noBtn.style.left = '';
   noBtn.style.top = '';
 

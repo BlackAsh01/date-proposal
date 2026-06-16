@@ -122,10 +122,12 @@ h1 {
 .ask-row {
   position: relative;
   width: 100%;
-  height: 90px;
+  min-height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .btn-yes {
@@ -150,7 +152,6 @@ h1 {
 .btn-yes:active { transform: scale(0.97); }
 
 .btn-no {
-  position: absolute;
   background: #fff;
   color: #aaa;
   border: 1.5px solid #ddd;
@@ -162,6 +163,10 @@ h1 {
   white-space: nowrap;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.btn-no.is-dodging {
+  position: absolute;
 }
 
 .btn-no:hover { color: #ccc; }
