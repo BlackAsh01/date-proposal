@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A playful interactive date proposal wizard">
+  <title>I have a very important question for you 🥺</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="floating-bg" id="floatBg" aria-hidden="true"></div>
+  <div id="confetti-box" aria-hidden="true"></div>
+
+  <main class="card" id="card">
+    <nav class="progress-bar" id="progress" aria-label="Progress">
+      <div class="dot active" id="dot0"></div>
+      <div class="dot" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+      <div class="dot" id="dot3"></div>
+      <div class="dot" id="dot4"></div>
+    </nav>
+
+    <section class="stage active" id="s0" aria-labelledby="stage0-title">
+      <span class="emoji-hero" role="img" aria-label="pleading face">🥺</span>
+      <h1 id="stage0-title">Hey, I have a very<br>important question…</h1>
+      <p class="subtitle">Please read carefully. The "No" button has been briefed.<br>It refuses to cooperate. 😈</p>
+      <p class="question-text">Will you go on a date with me? 🌹</p>
+      <div class="ask-row" id="askRow">
+        <button type="button" class="btn-yes" id="yesBtn">Yes!! 🎉</button>
+        <button type="button" class="btn-no" id="noBtn">No 🙅</button>
+      </div>
+      <p class="tiny-note">* The "No" button is allergic to your cursor. This is not a bug.</p>
+    </section>
+
+    <section class="stage" id="s1" aria-labelledby="stage1-title">
+      <span class="emoji-hero emoji-hero--slow" role="img" aria-label="calendar">📅</span>
+      <h1 id="stage1-title">Okay, WHEN are you free?! 🕺</h1>
+      <p class="subtitle">Pick a day — or choose an exact date.<br>Your schedule is precious, I respect it 🫡</p>
+      <div class="option-grid" id="dateGrid">
+        <button type="button" class="option-card" data-value="This weekend 🌸"><span class="oe">🌸</span>This weekend</button>
+        <button type="button" class="option-card" data-value="Next weekend 🎡"><span class="oe">🎡</span>Next weekend</button>
+        <button type="button" class="option-card" data-value="A weeknight 🌙"><span class="oe">🌙</span>A weeknight</button>
+        <button type="button" class="option-card" data-value="Surprise me 🎲"><span class="oe">🎲</span>Surprise me!</button>
+      </div>
+      <div class="or-divider">or pick an exact date</div>
+      <input type="date" class="date-input" id="exactDate" aria-label="Pick an exact date">
+      <button type="button" class="next-btn" id="btnDate" disabled>Next ✨</button>
+    </section>
+
+    <section class="stage" id="s2" aria-labelledby="stage2-title">
+      <span class="emoji-hero emoji-hero--fast" role="img" aria-label="drooling face">🤤</span>
+      <h1 id="stage2-title">What are we feeling, food-wise?</h1>
+      <p class="subtitle">No judgment… unless you say "just a salad"<br>In which case, we need to talk 🥗👀</p>
+      <div class="food-grid">
+        <button type="button" class="food-card" data-value="Pizza & cozy vibes 🍕"><span class="fe">🍕</span>Pizza & cozy</button>
+        <button type="button" class="food-card" data-value="Fancy dinner 🥂"><span class="fe">🥂</span>Fancy dinner</button>
+        <button type="button" class="food-card" data-value="Sushi night 🍣"><span class="fe">🍣</span>Sushi night</button>
+        <button type="button" class="food-card" data-value="Street food & strolling 🌮"><span class="fe">🌮</span>Street food</button>
+        <button type="button" class="food-card" data-value="Desserts only 🍰"><span class="fe">🍰</span>Desserts only</button>
+        <button type="button" class="food-card" data-value="Chef surprise 🎁"><span class="fe">🎁</span>Chef's choice</button>
+      </div>
+      <button type="button" class="next-btn" id="btnFood" disabled>Next ✨</button>
+    </section>
+
+    <section class="stage" id="s3" aria-labelledby="stage3-title">
+      <span class="emoji-hero emoji-hero--medium" role="img" aria-label="dress">👗</span>
+      <h1 id="stage3-title">Any dress code preferences? 💅</h1>
+      <p class="subtitle">Spoiler: you'd look stunning in literally anything.<br>But I'll let you choose anyway ✨</p>
+      <div class="dress-wrap">
+        <button type="button" class="dress-chip" data-value="Casual & comfy 👟">👟 Casual comfy</button>
+        <button type="button" class="dress-chip" data-value="Smart casual ✨">✨ Smart casual</button>
+        <button type="button" class="dress-chip" data-value="Dressy 💃">💃 Dressy</button>
+        <button type="button" class="dress-chip" data-value="Full fancy 🎩">🎩 Full fancy</button>
+        <button type="button" class="dress-chip" data-value="Matching outfits 👫">👫 Matching fits</button>
+        <button type="button" class="dress-chip" data-value="No preference 🤷">🤷 Whatever goes</button>
+      </div>
+      <button type="button" class="next-btn" id="btnDress" disabled>Let's do this! 🚀</button>
+    </section>
+
+    <section class="stage" id="s4" aria-labelledby="stage4-title">
+      <span class="emoji-hero emoji-hero--wiggle" role="img" aria-label="party face">🥳</span>
+      <h1 id="stage4-title">It's officially a DATE!! 🎊</h1>
+      <p class="subtitle">Saving this to my heart forever 💌<br>Here's the plan, officially official:</p>
+      <div class="summary-box">
+        <div class="sum-row"><span class="sum-label">📅 When</span><span class="sum-val" id="sumDate">—</span></div>
+        <div class="sum-row"><span class="sum-label">🍽️ Food</span><span class="sum-val" id="sumFood">—</span></div>
+        <div class="sum-row"><span class="sum-label">👗 Outfit</span><span class="sum-val" id="sumDress">—</span></div>
+      </div>
+      <p class="closing-note">
+        I'm already nervous and excited at the same time 🦋🦋<br>
+        This is going to be the best day ever. I promise. 💕
+      </p>
+      <button type="button" class="next-btn" data-action="restart">Send to someone special 💌</button>
+      <br>
+      <button type="button" class="restart-btn" data-action="restart">Start over 🔄</button>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
